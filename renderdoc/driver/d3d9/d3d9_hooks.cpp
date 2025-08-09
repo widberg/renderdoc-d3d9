@@ -1,7 +1,7 @@
 /******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2026 Baldur Karlsson
+ * Copyright (c) 2019-2025 Baldur Karlsson
  * Copyright (c) 2014 Crytek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,11 +26,16 @@
 #include "driver/d3d11/d3d11_device.h"
 #include "hooks/hooks.h"
 
+#include "driver/dx/official/d3d9.h"
+#include "d3d9_device.h"
+
 typedef int(WINAPI *PFN_BEGIN_EVENT)(DWORD, WCHAR *);
 typedef int(WINAPI *PFN_END_EVENT)();
 typedef int(WINAPI *PFN_SET_MARKER_EVENT)(DWORD, WCHAR *);
 typedef void(WINAPI *PFN_SET_OPTIONS)(DWORD);
 typedef DWORD(WINAPI *PFN_GET_OPTIONS)();
+
+typedef IDirect3D9 *(WINAPI *PFN_D3D9_CREATE)(UINT);
 
 class D3D9Hook : LibraryHook
 {
@@ -46,6 +51,8 @@ public:
     PERF_SetMarker.Register("d3d9.dll", "D3DPERF_SetMarker", PERF_SetMarker_hook);
     PERF_SetOptions.Register("d3d9.dll", "D3DPERF_SetOptions", PERF_SetOptions_hook);
     PERF_GetStatus.Register("d3d9.dll", "D3DPERF_GetStatus", PERF_GetStatus_hook);
+
+    Create9.Register("d3d9.dll", "Direct3DCreate9", Create9_hook);
   }
 
 private:
@@ -57,6 +64,7 @@ private:
   HookedFunction<PFN_SET_MARKER_EVENT> PERF_SetMarker;
   HookedFunction<PFN_SET_OPTIONS> PERF_SetOptions;
   HookedFunction<PFN_GET_OPTIONS> PERF_GetStatus;
+  HookedFunction<PFN_D3D9_CREATE> Create9;
 
   static int WINAPI PERF_BeginEvent_hook(DWORD col, WCHAR *wszName)
   {
@@ -90,6 +98,14 @@ private:
   }
 
   static DWORD WINAPI PERF_GetStatus_hook() { return 1; }
+  static IDirect3D9 *WINAPI Create9_hook(UINT SDKVersion)
+  {
+    RDCLOG("App creating d3d9 %x", SDKVersion);
+
+    IDirect3D9 *realD3D = d3d9hooks.Create9()(SDKVersion);
+
+    return new WrappedD3D9(realD3D);
+  }
 };
 
 D3D9Hook D3D9Hook::d3d9hooks;
