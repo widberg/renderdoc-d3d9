@@ -69,7 +69,7 @@ void D3D8ResourceManager::Create_InitialState(ResourceId id, IUnknown *live, boo
 {
 }
 
-void D3D8ResourceManager::Apply_InitialState(IUnknown *live, const D3D8InitialContents &data)
+void D3D8ResourceManager::Apply_InitialState(IUnknown *live, D3D8InitialContents &data)
 {
   // TODO
 }

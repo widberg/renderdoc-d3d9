@@ -82,7 +82,7 @@ private:
   bool Serialise_InitialState(WriteSerialiser &ser, ResourceId id, D3D8ResourceRecord *record,
                               const D3D8InitialContents *data);
   void Create_InitialState(ResourceId id, IUnknown *live, bool hasData);
-  void Apply_InitialState(IUnknown *live, const D3D8InitialContents &data);
+  void Apply_InitialState(IUnknown *live, D3D8InitialContents &data);
 
   WrappedD3DDevice8 *m_Device;
 };
