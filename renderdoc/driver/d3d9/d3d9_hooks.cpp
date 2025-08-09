@@ -36,6 +36,7 @@ typedef void(WINAPI *PFN_SET_OPTIONS)(DWORD);
 typedef DWORD(WINAPI *PFN_GET_OPTIONS)();
 
 typedef IDirect3D9 *(WINAPI *PFN_D3D9_CREATE)(UINT);
+typedef HRESULT(WINAPI *PFN_D3D9_CREATEEX)(UINT, IDirect3D9Ex **);
 
 class D3D9Hook : LibraryHook
 {
@@ -53,6 +54,7 @@ public:
     PERF_GetStatus.Register("d3d9.dll", "D3DPERF_GetStatus", PERF_GetStatus_hook);
 
     Create9.Register("d3d9.dll", "Direct3DCreate9", Create9_hook);
+    Create9Ex.Register("d3d9.dll", "Direct3DCreate9Ex", Create9Ex_hook);
   }
 
 private:
@@ -65,6 +67,7 @@ private:
   HookedFunction<PFN_SET_OPTIONS> PERF_SetOptions;
   HookedFunction<PFN_GET_OPTIONS> PERF_GetStatus;
   HookedFunction<PFN_D3D9_CREATE> Create9;
+  HookedFunction<PFN_D3D9_CREATEEX> Create9Ex;
 
   static int WINAPI PERF_BeginEvent_hook(DWORD col, WCHAR *wszName)
   {
@@ -101,10 +104,41 @@ private:
   static IDirect3D9 *WINAPI Create9_hook(UINT SDKVersion)
   {
     RDCLOG("App creating d3d9 %x", SDKVersion);
+    //*
+    IDirect3D9 *realD3D = NULL;
+    realD3D = d3d9hooks.Create9()(SDKVersion);
+    if(realD3D != NULL)
+    /*/
+  // Creating the Ex object here causes some games to fail initializing
+    IDirect3D9Ex *realD3D = NULL;
+    HRESULT result = d3d9hooks.Create9Ex()(SDKVersion, &realD3D);
+    if(result == S_OK && realD3D != NULL)
+    //*/
+    {
+      return new WrappedD3D9(realD3D);
+    }
+    else
+    {
+      return NULL;
+    }
+  }
 
-    IDirect3D9 *realD3D = d3d9hooks.Create9()(SDKVersion);
+  static HRESULT WINAPI Create9Ex_hook(UINT SDKVersion, IDirect3D9Ex **ppD3D)
+  {
+    RDCLOG("App creating d3d9Ex %x", SDKVersion);
 
-    return new WrappedD3D9(realD3D);
+    IDirect3D9Ex *realD3D = NULL;
+    HRESULT result = d3d9hooks.Create9Ex()(SDKVersion, &realD3D);
+
+    if(result == S_OK)
+    {
+      *ppD3D = new WrappedD3D9(realD3D);
+    }
+    else
+    {
+      *ppD3D = NULL;
+    }
+    return result;
   }
 };
 
