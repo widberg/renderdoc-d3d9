@@ -38,6 +38,7 @@ D3D9DebugManager::~D3D9DebugManager()
   ShutdownFontRendering();
 }
 
+// TODO: Split the text rendering off into a D3D9TextRenderer class like D3D11 does.
 bool D3D9DebugManager::InitFontRendering()
 {
   HRESULT hr = S_OK;
@@ -69,8 +70,8 @@ bool D3D9DebugManager::InitFontRendering()
 
   IDirect3DTexture9 *fontTex = NULL;
 
-  hr = m_WrappedDevice->CreateTexture(width, height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8,
-                                      D3DPOOL_DEFAULT, &fontTex, NULL);
+  hr = m_WrappedDevice->CreateTexture(width, height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
+                                      &fontTex, NULL);
 
   if(FAILED(hr))
   {
@@ -78,7 +79,7 @@ bool D3D9DebugManager::InitFontRendering()
   }
 
   D3DLOCKED_RECT lockedRegion;
-  hr = fontTex->LockRect(0, &lockedRegion, NULL, D3DLOCK_DISCARD);
+  hr = fontTex->LockRect(0, &lockedRegion, NULL, 0);
 
   if(FAILED(hr))
   {

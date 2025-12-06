@@ -69,8 +69,8 @@ bool D3D8DebugManager::InitFontRendering()
 
   IDirect3DTexture8 *fontTex = NULL;
 
-  hr = m_WrappedDevice->CreateTexture(width, height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8R8G8B8,
-                                      D3DPOOL_DEFAULT, &fontTex);
+  hr = m_WrappedDevice->CreateTexture(width, height, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED,
+                                      &fontTex);
 
   if(FAILED(hr))
   {
@@ -78,7 +78,7 @@ bool D3D8DebugManager::InitFontRendering()
   }
 
   D3DLOCKED_RECT lockedRegion;
-  hr = fontTex->LockRect(0, &lockedRegion, NULL, D3DLOCK_DISCARD);
+  hr = fontTex->LockRect(0, &lockedRegion, NULL, 0);
 
   if(FAILED(hr))
   {
