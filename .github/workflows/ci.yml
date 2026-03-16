@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - v1.x
+      - v1.x-d3d9
       - ci-test
   pull_request:
     branches:
       - v1.x
+      - v1.x-d3d9
 
 defaults:
   run:
