@@ -44,6 +44,11 @@ public:
   void StartFrameCapture(DeviceOwnedWindow devWnd);
   bool EndFrameCapture(DeviceOwnedWindow devWnd);
   bool DiscardFrameCapture(DeviceOwnedWindow devWnd);
+  uint32_t SetObjectAnnotation(void *object, const char *key, RENDERDOC_AnnotationType valueType,
+                               uint32_t valueVectorWidth, const RENDERDOC_AnnotationValue *value);
+  uint32_t SetCommandAnnotation(void *queueOrCommandBuffer, const char *key,
+                                RENDERDOC_AnnotationType valueType, uint32_t valueVectorWidth,
+                                const RENDERDOC_AnnotationValue *value);
 
   void InternalRef() { InterlockedIncrement(&m_InternalRefcount); }
   void InternalRelease() { InterlockedDecrement(&m_InternalRefcount); }

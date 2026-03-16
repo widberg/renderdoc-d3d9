@@ -260,6 +260,18 @@ bool WrappedD3DDevice9::DiscardFrameCapture(DeviceOwnedWindow wnd)
   return false;
 }
 
+uint32_t WrappedD3DDevice9::SetObjectAnnotation(void *, const char *, RENDERDOC_AnnotationType,
+                                                uint32_t, const RENDERDOC_AnnotationValue *)
+{
+  return 2;
+}
+
+uint32_t WrappedD3DDevice9::SetCommandAnnotation(void *, const char *, RENDERDOC_AnnotationType,
+                                                 uint32_t, const RENDERDOC_AnnotationValue *)
+{
+  return 2;
+}
+
 HRESULT __stdcall WrappedD3DDevice9::TestCooperativeLevel()
 {
   return m_Device->TestCooperativeLevel();

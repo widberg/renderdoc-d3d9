@@ -113,15 +113,6 @@ void WrappedD3DDevice8::ReleaseResource(IDirect3DResource8 *res)
 
   if(record)
     record->Delete(GetResourceManager());
-
-  // wrapped resources get released all the time, we don't want to
-  // try and slerp in a resource release. Just the explicit ones
-  if(IsReplayMode(m_State))
-  {
-    if(GetResourceManager()->HasLiveResource(id))
-      GetResourceManager()->EraseLiveResource(id);
-    return;
-  }
 }
 
 HRESULT WrappedD3DDevice8::QueryInterface(REFIID riid, void **ppvObject)
@@ -164,6 +155,18 @@ bool WrappedD3DDevice8::DiscardFrameCapture(DeviceOwnedWindow devWnd)
 {
   RDCERR("Capture not supported on D3D8");
   return false;
+}
+
+uint32_t WrappedD3DDevice8::SetObjectAnnotation(void *, const char *, RENDERDOC_AnnotationType,
+                                                uint32_t, const RENDERDOC_AnnotationValue *)
+{
+  return 2;
+}
+
+uint32_t WrappedD3DDevice8::SetCommandAnnotation(void *, const char *, RENDERDOC_AnnotationType,
+                                                 uint32_t, const RENDERDOC_AnnotationValue *)
+{
+  return 2;
 }
 
 HRESULT __stdcall WrappedD3DDevice8::TestCooperativeLevel()
@@ -350,12 +353,6 @@ HRESULT __stdcall WrappedD3DDevice8::CreateVertexBuffer(UINT Length, DWORD Usage
     {
       // TODO: Serialise
     }
-    else
-    {
-      WrappedIDirect3DVertexBuffer8 *w = (WrappedIDirect3DVertexBuffer8 *)wrapped;
-
-      m_ResourceManager->AddLiveResource(w->GetResourceID(), wrapped);
-    }
 
     *ppVertexBuffer = wrapped;
   }
@@ -380,12 +377,6 @@ HRESULT __stdcall WrappedD3DDevice8::CreateIndexBuffer(UINT Length, DWORD Usage,
     if(IsCaptureMode(m_State))
     {
       // TODO: Serialise
-    }
-    else
-    {
-      WrappedIDirect3DIndexBuffer8 *w = (WrappedIDirect3DIndexBuffer8 *)wrapped;
-
-      m_ResourceManager->AddLiveResource(w->GetResourceID(), wrapped);
     }
 
     *ppIndexBuffer = wrapped;

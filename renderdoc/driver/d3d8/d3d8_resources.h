@@ -63,13 +63,13 @@ protected:
     if(!ret)
       RDCERR("Error adding wrapper for type %s", ToStr(__uuidof(NestedType)).c_str());
 
-    m_pDevice->GetResourceManager()->AddCurrentResource(GetResourceID(), this);
+    m_pDevice->GetResourceManager()->AddResource(GetResourceID(), this);
   }
 
   virtual void Shutdown()
   {
     m_pDevice->GetResourceManager()->RemoveWrapper(m_pReal);
-    m_pDevice->GetResourceManager()->ReleaseCurrentResource(GetResourceID());
+    m_pDevice->GetResourceManager()->ReleaseResource(GetResourceID());
     m_pDevice->ReleaseResource((NestedType *)this);
     SAFE_RELEASE(m_pReal);
     m_pDevice = NULL;
