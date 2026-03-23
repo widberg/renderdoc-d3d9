@@ -1,0 +1,12 @@
+<Project>
+  <!-- Imported AFTER all project content (via Microsoft.Cpp.targets -> Microsoft.Common.targets),
+       so these ItemDefinitionGroup settings override the TreatWarningAsError=true in every vcxproj.
+       Pass /p:PlatformToolset=ClangCL to opt in; omit it for a normal MSVC build. -->
+  <ItemDefinitionGroup Condition="'$(PlatformToolset)' == 'ClangCL'">
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <!-- Suppress clang warnings about MSVC-style flags (/w4XXXX etc.) it does not recognise -->
+      <AdditionalOptions>-Wno-c++11-narrowing -Wno-microsoft-template -Wno-microsoft-exception-spec -Wno-microsoft-enum-forward-reference -Wno-microsoft-extra-qualification -Wno-microsoft-cast -Wno-microsoft-goto -Wno-microsoft-pure-definition -Wno-sign-compare -Wno-cast-function-type-mismatch -Wno-deprecated-copy -Wno-reorder-ctor -Wno-missing-field-initializers -Wno-unused-parameter -Wno-overloaded-virtual -Wno-undefined-var-template -Wno-tautological-constant-out-of-range-compare -Wno-invalid-offsetof -Wno-unused-but-set-variable -Wno-missing-braces -Wno-typename-missing -Wno-unused-variable -Wno-writable-strings -Wno-null-dereference -Wno-ignored-attributes -Wno-unused-private-field -Wno-inconsistent-missing-override -Wno-delete-non-abstract-non-virtual-dtor -Wno-unused-value -Wno-range-loop-construct -Wno-nonportable-include-path -Wno-bitfield-constant-conversion -Wno-unused-lambda-capture -Wno-return-type -Wno-null-pointer-subtraction -Wno-bool-conversion -Wno-logical-op-parentheses %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>
