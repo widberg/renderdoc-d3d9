@@ -1,3 +1,25 @@
+# RenderDoc D3D9
+
+This is a fork of [RenderDoc](https://github.com/baldurk/renderdoc) that restores some old D3D9 related commits. It is currently non-functional. I am planning to start over from scratch but it will take some time.
+
+##### Why?
+
+To learn how RenderDoc and D3D9 work at a deeper level.
+
+##### What uses D3D9?
+
+You can test with these open-source programs:
+
+* [ocornut/imgui examples/example_win32_directx9](https://github.com/ocornut/imgui/tree/master/examples/example_win32_directx9)
+* [XNA Demo Apps](https://github.com/SimonDarksideJ/XNAGameStudio)
+* [directxtutorial.com](http://www.directxtutorial.com/LessonList.aspx?listid=9)
+
+##### What am I allowed to capture?
+
+I respect upstream's strict policy that RenderDoc is intended for debugging your own programs only. See the paragraph regarding that policy below.
+
+The original RenderDoc README.md follows:
+
 <p align="center"><img src="https://user-images.githubusercontent.com/661798/36482670-f81601c0-170b-11e8-8adb-2365b346ac27.png" /></p>
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
